@@ -1,2 +1,2 @@
 # PDIH
-Repositorio para las practicas de Perifericos de interfaz humana
+Repositorio para las practicas de Perifericos y Dispositivos de interfaz humana
