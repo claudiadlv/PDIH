@@ -12,6 +12,11 @@
 #include <stdio.h>
 #include <dos.h>
 
+unsigned char cfondo=0;
+unsigned char ctexto=1;
+char caracter='c';
+char caracater2='*';
+
 /**
  * @brief coloca el cursor en una posicion determinada
  * 
@@ -19,7 +24,7 @@
  * @param y 
  */
 
-void xy(int x, int y){
+void gotoxy(int x, int y){
 	union REGS inregs, outregs;
 	inregs.h.ah = 0x02;
 	inregs.h.bh = 0x00;
@@ -70,19 +75,46 @@ void setvideomode(unsigned char modo){
 }
 
 /**
- * @brief modifica el color de primer plano con que se mostrarán los caracteres y tambien modifica el color del fondo
+ * @brief obtiene el modo de video actual
+ * 
+ * @return unsigned char 
+ */
+
+unsigned char getvideomode() {
+    union REGS inregs, outregs;
+    inregs.h.ah = 0x0F; // Función 0Fh del BIOS para obtener el modo de video actual
+    int86(0x10, &inregs, &outregs);
+    return outregs.h.al; // El modo de video actual se encuentra en AL
+}
+
+/**
+ * @brief modifica el color de primer plano con que se mostrarán los caracteres
  * 
  */
 
-void escribir_char_con_color(){
-	union REGS inregs, outregs;
-	inregs.h.ah = 0x09;
-	inregs.h.al = '*';    //una funcion más general debe recibir el caracter a imprimir
-	inregs.h.bl = cfondo << 4 | ctexto;
-	inregs.h.bh = 0x00;
-	inregs.x.cx = 1;
-	int86(0x10,&inregs,&outregs);
-	return;
+void textcolor(char caracter, int color_texto) {
+    union REGS inregs, outregs;
+    inregs.h.ah = 0x09;
+    inregs.h.al = caracter;
+    inregs.h.bl = color_texto; // El color de texto va directamente en BL
+    inregs.h.bh = 0x00;
+    inregs.x.cx = 1;
+    int86(0x10, &inregs, &outregs);
+}
+
+/**
+ * @brief modifica el color de fondo con que se mostrarán los caracteres
+ * 
+ */
+
+void textbackground(char caracter, int color_fondo) {
+    union REGS inregs, outregs;
+    inregs.h.ah = 0x09;
+    inregs.h.al = caracter;
+    inregs.h.bl = color_fondo << 4; // Desplazamos el color de fondo a la parte alta del byte BL
+    inregs.h.bh = 0x00;
+    inregs.x.cx = 1;
+    int86(0x10, &inregs, &outregs);
 }
 
 /**
@@ -100,7 +132,7 @@ void mi_cls(){
  * @return int 
  */
 
-int mi_getchar(){
+int getche(){
 	 union REGS inregs, outregs;
 	 int caracter;
 
@@ -111,11 +143,63 @@ int mi_getchar(){
 	 return caracter;
 }
 
-int main(){
-	xy(11,11);
-	printf("**");
+/**
+ * @brief escribe un carácter en pantalla
+ * 
+ * @param caracter 
+ */
 
+void cputchar(char caracter) {
+    union REGS inregs, outregs;
+    inregs.h.ah = 0x09;
+    inregs.h.al = caracter; 
+    inregs.h.bl = 0x00; 
+    inregs.h.bh = 0x00; 
+    int86(0x10, &inregs, &outregs);
+}
+
+
+void mi_pausa(){
+   union REGS inregs, outregs;
+	 inregs.h.ah = 8;
+	 int86(0x21, &inregs, &outregs);
+}
+
+int main(){
+
+	mi_cls();
+	
+	//Cambiamos de modo de pantalla
+	setvideomode(1);	
+   	mi_pausa();
+
+	//Coloca el cursor
+	gotoxy(11,11);
+	
+	//obtiene un carácter de teclado y lo muestra en pantalla
+	getche();
+	mi_pausa();
+	mi_cls();
+	
+	//Cambiar el color de un caracter
+	cfondo=4; ctexto=1; // cfondo=4=rojo , ctexto=1=azul
+	textcolor(caracter, ctexto); 
+	mi_pausa();
+	
+	//Cambiar el color del fondo
+	textcolor(caracater2, cfondo); 
+   	mi_pausa();
+
+	//Cambia el tipo de cursor
+   	setcursortype(2);
+   	mi_pausa();
+
+	getvideomode();
 	mi_pausa();
 
+	//Volvemos al modo de video original
+	setvideomode(3);	
+   	mi_pausa();
+
 	return 0;
-}
+} 	
