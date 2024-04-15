@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #define DELAY 50000
+#define PLAYER_SPEED 2
 
 void show_menu() {
     clear();
@@ -58,12 +59,26 @@ void show_controls() {
     int start_x = max_x / 2 - 15;
     
     // Imprimir los controles del juego
-    mvprintw(10, start_x, "Controles del juego:");
-    mvprintw(12, start_x, "Jugador 1: W (arriba), S (abajo)");
-    mvprintw(14, start_x, "Jugador 2: O (arriba), L (abajo)");
-    mvprintw(16, start_x, "Presiona cualquier tecla para volver al menú.");
+    mvprintw(10, start_x/2, "Controles del juego:");
+    mvprintw(12, start_x/2, "Jugador 1: W (arriba), S (abajo)");
+    mvprintw(14, start_x/2, "Jugador 2: O (arriba), L (abajo)");
+    mvprintw(16, start_x/2, "Presiona cualquier tecla para volver al menú.");
 
     refresh(); 
+}
+
+void show_score_window(int p1_score, int p2_score) {
+    clear();
+    int max_y, max_x;
+    getmaxyx(stdscr, max_y, max_x);
+    
+    int start_x = max_x / 2 - 15;
+    
+    mvprintw(10, start_x/2, "Marcador Final");
+    mvprintw(12,  start_x/2, "Puntaje Jugador 1: %d", p1_score);
+    mvprintw(13,  start_x/2, "Puntaje Jugador 2: %d", p2_score);
+    mvprintw(14, start_x/2, "Presiona 'S' para seguir jugando o cualquier otra tecla para salir");
+    refresh();
 }
 
 int main(int argc, char *argv[]) {
@@ -138,15 +153,15 @@ int main(int argc, char *argv[]) {
 
         //Controlador Player 1
         if (ch == 'w' && p1_y > 0)
-            p1_y -= 1;
+            p1_y -= PLAYER_SPEED;
         else if (ch == 's' && p1_y < max_y - 4)
-            p1_y += 1;
+            p1_y += PLAYER_SPEED;
 
         //Controlador Player 2
         if (ch == 'o' && p2_y > 0)
-            p2_y -= 1;
+            p2_y -= PLAYER_SPEED;
         else if (ch == 'l' && p2_y < max_y - 4)
-            p2_y += 1;   
+            p2_y += PLAYER_SPEED;   
 
     	usleep(DELAY);  	
 
@@ -158,22 +173,44 @@ int main(int argc, char *argv[]) {
             if (next_x < 0) {
                 p2_score++;
                 if (p2_score >= 3) {
-                    clear();
-                    mvprintw(max_y / 2, max_x / 2 - 10, "¡Jugador 2 gana con %d puntos!", p2_score);
-                    refresh();
-                    usleep(2000000);
-                    endwin();
-                    exit(EXIT_SUCCESS);
+                    show_score_window(p1_score, p2_score);
+
+                    while(1){
+                        ch = getch();
+                        if(ch == 's'){
+                            //Si el jugador quiere seguir jugando se resetean los puntos
+                            p1_score = 0; 
+                            p2_score = 0;
+                            p1_y = max_y/2;
+                            p2_y = max_y/2;
+
+                            break;
+                        }else if(ch != ERR){
+                            //Si se presiona cualquier otra recla, salimos del juego
+                            endwin();
+                            exit(EXIT_SUCCESS);
+                        }
+                    }
                 }
             } else {
                 p1_score++;
                 if (p1_score >= 3) {
-                    clear();
-                    mvprintw(max_y / 2, max_x / 2 - 10, "¡Jugador 1 gana con %d puntos!", p1_score);
-                    refresh();
-                    usleep(2000000);
-                    endwin();
-                    exit(EXIT_SUCCESS);
+                    show_score_window(p1_score, p2_score);
+                    while(1) {
+                        ch = getch();
+                        if (ch == 's') {
+                            // Si el jugador quiere seguir jugando, reseteamos los puntajes y continuamos
+                            p1_score = 0;
+                            p2_score = 0;
+                            p1_y = max_y/2;
+                            p2_y = max_y/2;
+                            break;
+                        } else if (ch != ERR) {
+                            // Si presiona cualquier otra tecla, salimos del juego
+                            endwin();
+                            exit(EXIT_SUCCESS);
+                        }
+                    }
                 }
             }
             x = max_x / 2;
@@ -188,10 +225,12 @@ int main(int argc, char *argv[]) {
             y += directiony;
         }
 
+        //Verifciar colisión con el player 1
         if (next_x == p1_x && (next_y >= p1_y && next_y <= p1_y + 3)) {
             directionx *= -1;
         }
 
+        //Verifciar colisión con el player 2
         if (next_x == p2_x && (next_y >= p2_y && next_y <= p2_y + 3)) {
             directionx *= -1;
         }
