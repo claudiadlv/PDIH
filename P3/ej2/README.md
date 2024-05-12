@@ -1,0 +1,1 @@
+No se porque pero el circuito no me funciona, entonces he pensado que era mejor adjuntarle un video de tinkercad para que se viese que el codigo que habia hecho funcionaba bien.

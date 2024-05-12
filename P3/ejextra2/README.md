@@ -1,0 +1,1 @@
+Para este ejercicio no me di cuenta de que necesitaba un zumbador, el cual no tengo. Entonces le adjunto video de la simulación de tinkercad para que vea que el código esta bien
