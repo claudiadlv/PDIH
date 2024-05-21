@@ -1,0 +1,88 @@
+% Rectángulo para colorear el fondo
+newpath                    % Iniciar el 'path' del rectángulo para colorear
+                           % el fondo
+1.0 1.0 1.0 setrgbcolor    % Establecer el color a blanco
+
+0 0 moveto                 % Mover al punto (x, y) = (0, 0)
+632 0 rlineto              % Trazar línea al punto (632, 0)
+0 800 rlineto              % Trazar línea al punto (632, 800)
+-632 0 rlineto             % Trazar línea al punto (0, 800)
+closepath                  % Cerrar el rectángulo
+
+fill                       % Colorear el interior de la figura
+stroke                     % Finalizar el 'path' del rectángulo para colorear
+                           % el fondo
+
+% Rectángulo completo
+newpath
+0.75 0.75 0.75 setrgbcolor % Establecer el color a gris medio
+
+50 650 moveto
+500 0 rlineto
+0 -200 rlineto
+-500 0 rlineto
+closepath
+
+fill
+stroke
+
+% Imagen
+newpath                    % Iniciar el 'path' del círculo
+0.5 0.5 0.5 setrgbcolor   % Establecer el color a gris medio
+190 550 62.5  0  360 arc  % Sección de círculo
+fill                       % Colorear el interior de la figura
+0.7 0.7 0.7 setrgbcolor   % Establecer el color a gris claro para la sombra
+190 550 60.0  0  360 arc  % Sección de círculo para la sombra
+fill                       % Colorear la sombra
+stroke                     % Finalizar el 'path' del círculo
+
+% Textos
+/Helvetica-Bold findfont      % Tipo de letra del texto
+16 scalefont               % Tamaño de letra del texto
+setfont                    % Deja la fuente disponible para el texto
+
+newpath                    % Iniciar el 'path' de la primera frase
+0.3 setgray                % Declarar 0.3 en la escala de gris
+300 610 moveto             % Mover al punto (x, y) = (370, 610)
+(Claudia de la Vieja Lafuente) show    % Mostrar frase
+stroke                     % Finalizar el 'path' de la primera frase
+
+/Helvetica findfont
+13 scalefont
+setfont
+
+newpath
+0.2 setgray                
+390 590 moveto             % Mover la segunda frase 20 unidades hacia abajo
+(Ingeniera Informatica) show
+stroke
+
+newpath
+0.2 setgray
+355 560 moveto             % Mover la tercera frase 20 unidades hacia abajo
+(Plaza de la Castellana, 141) show
+stroke
+
+newpath
+0.2 setgray
+360 540 moveto             % Mover la cuarta frase 20 unidades hacia abajo
+(Local 2 - Edificio Cuzco IV) show
+stroke
+
+newpath
+0.2 setgray
+420 520 moveto             % Mover la quinta frase 20 unidades hacia abajo
+(18008 Granada) show
+stroke
+
+newpath
+0.2 setgray
+325 500 moveto             % Mover la sexta frase 20 unidades hacia abajo
+(Telf: 958 14 78 65/690 48 11 29) show
+stroke
+
+newpath
+0.2 setgray
+400 480 moveto             % Mover la séptima frase 20 unidades hacia abajo
+(claudia@gmail.com) show
+stroke
