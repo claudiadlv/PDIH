@@ -1,0 +1,1 @@
+savedcmd_/home/claudia/PDIH/S_LKM/miejemplo.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/claudia/PDIH/S_LKM/miejemplo.ko /home/claudia/PDIH/S_LKM/miejemplo.o /home/claudia/PDIH/S_LKM/miejemplo.mod.o;  make -f ./arch/x86/Makefile.postlink /home/claudia/PDIH/S_LKM/miejemplo.ko
